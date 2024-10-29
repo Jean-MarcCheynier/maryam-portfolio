@@ -9,7 +9,7 @@ export default function Home() {
       <LayerManager.Item
         id={LayerId.Background}
         priority
-        src="/0.png"
+        src="/background.png"
         alt="Background layer"
       />
       <LayerManager.Item
