@@ -12,5 +12,6 @@
       "withStory": true,
       "withLazy": true
     }
-  }
+  },
+  "cssPreprocessor": "css"
 }

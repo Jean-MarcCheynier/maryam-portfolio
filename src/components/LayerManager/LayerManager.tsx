@@ -1,42 +1,34 @@
 "use client";
 
-import React, { FC, PropsWithChildren, useContext } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import styles from "./LayerManager.module.css";
-import {
-  Layer,
-  LayerProps,
-  LayerWithContext,
-} from "@/src/components/Layer/Layer";
-import {
-  LayerActionContext,
-  LayerContextProvider,
-  useLayerActions,
-} from "../LayerContextProvider";
+import { LayerProps, LayerWithContext } from "@/src/components/Layer/Layer";
+import { LayerContextProvider } from "../LayerContextProvider";
+import LayerController from "../LayerController/LayerController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface LayerManagerProps {}
 
 export type LayerManagerComposition = {
   Item: typeof LayerWithContext;
+  Controller: typeof LayerController;
 };
 
 const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
   LayerManagerComposition = ({ children }) => {
-  const { highlightBio } = useLayerActions();
-
   return (
     <LayerContextProvider>
-      <div
-        className={styles.LayerManager}
-        data-testid="LayerManager"
-        onMouseEnter={highlightBio}
-      >
+      <div className={styles.LayerManager} data-testid="LayerManager">
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            if (child.type !== Layer) {
+            console.log("Child type", child.type);
+            if (child.type === LayerWithContext) {
               const props = child.props as LayerProps;
 
               return <LayerWithContext {...props} key={props.id} />;
+            }
+            if (child.type === LayerController) {
+              return child;
             }
           }
         })}
@@ -46,5 +38,6 @@ const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
 };
 
 LayerManager.Item = LayerWithContext;
+LayerManager.Controller = LayerController;
 
 export default LayerManager;

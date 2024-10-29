@@ -2,7 +2,6 @@
 
 .Layer {
   position: absolute;
-  border: 1px solid #bd5858;
 
   width: min(100vw, 100vh);
   height: min(100vw, 100vh);

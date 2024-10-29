@@ -10,20 +10,24 @@ export type LayerContextProps = { visible: boolean };
 export type LayerContextMapProps = Record<string, LayerContextProps>;
 export const LayerContext = React.createContext<LayerContextMapProps>({});
 
-export type ActionContextProps = Dispatch<{ type: string; payload: object }>;
+export type ActionContextProps = Dispatch<Action>;
 export const LayerActionContext =
   React.createContext<ActionContextProps | null>(null);
+
+const initialLayerContext: LayerContextMapProps = {
+  0: { visible: true },
+  1: { visible: false },
+  2: { visible: false },
+  3: { visible: false },
+  4: { visible: false },
+  5: { visible: true },
+};
 
 export const LayerContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [layerContext, dispatch] = useReducer(reducer, {
-    0: { visible: true },
-    1: { visible: false },
-    2: { visible: false },
-    3: { visible: false },
-    4: { visible: false },
-    5: { visible: true },
+    ...initialLayerContext,
   });
 
   return (
@@ -37,25 +41,30 @@ export const LayerContextProvider: React.FC<PropsWithChildren> = ({
 
 export function useLayerActions() {
   const dispatch = useContext(LayerActionContext);
-  console.log("dispatch ", dispatch);
+
   if (!dispatch) {
-    console.log("pas de dispatch");
-    return {
-      init: () => {},
-      highlightBio: () => {},
-    };
+    throw new Error(
+      "useLayerActions must be used within a LayerContextProvider"
+    );
   }
   //ACTIONS
-  const highlightBio = () => {
-    console.log("coucou");
-    dispatch({ type: "bio", payload: { visible: true } });
+  const reset = () => {
+    dispatch({
+      type: ActionTypes.reset,
+    });
+  };
+  const highlight = (id: string) => {
+    dispatch({
+      type: ActionTypes.highlight,
+      id,
+    });
   };
   const init = (initialLayerContext: LayerContextMapProps) => {
     console.log("init", initialLayerContext);
-    dispatch({ type: "init", payload: initialLayerContext });
+    dispatch({ type: ActionTypes.init, payload: initialLayerContext });
   };
 
-  return { highlightBio, init };
+  return { highlight, init, reset };
 }
 export function useLayerContext(layerId: string): { visible: boolean };
 export function useLayerContext(): LayerContextMapProps;
@@ -72,25 +81,27 @@ export function useLayerContext(layerId?: unknown) {
   return layerContext;
 }
 
-const reducer: Reducer<
-  LayerContextMapProps,
-  { type: string; payload: object }
-> = (state, action) => {
+enum ActionTypes {
+  init = "init",
+  reset = "reset",
+  highlight = "highlight",
+}
+
+type Action =
+  | { type: ActionTypes.init; payload: LayerContextMapProps }
+  | { type: ActionTypes.highlight; id: string }
+  | { type: ActionTypes.reset };
+
+const reducer: Reducer<LayerContextMapProps, Action> = (state, action) => {
   console.log("reducer", action);
   switch (action.type) {
-    case "init":
+    case ActionTypes.init:
       return { ...action.payload };
-    case "bio":
-      state["bio"] = { ...state["bio"], ...action.payload };
-      console.log("passed");
-      return {
-        0: { visible: false },
-        1: { visible: false },
-        2: { visible: false },
-        3: { visible: false },
-        4: { visible: false },
-        5: { visible: false },
-      };
+    case ActionTypes.reset:
+      return { ...initialLayerContext };
+    case ActionTypes.highlight:
+      state[action.id] = { visible: true };
+      return { ...state };
 
     default:
       return state;

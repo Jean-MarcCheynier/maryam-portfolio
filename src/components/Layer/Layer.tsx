@@ -1,14 +1,9 @@
 "use client";
 
-import React, { FC, useContext } from "react";
+import React, { FC } from "react";
 import styles from "./Layer.module.css";
 import Image from "next/image";
-import {
-  LayerActionContext,
-  LayerContextProps,
-  useLayerActions,
-  useLayerContext,
-} from "../LayerContextProvider";
+import { LayerContextProps, useLayerContext } from "../LayerContextProvider";
 
 export type LayerProps = {
   id: string;
@@ -30,7 +25,9 @@ export const Layer: FC<LayerProps & LayerContextProps> = ({
         src={src}
         alt={alt}
         priority={priority}
-        className={visible ? "visible" : "invisible"}
+        className={`transition-opacity  ${
+          visible ? "duration-700 opacity-100" : "duration-200 opacity-0"
+        }`}
         style={{
           width: "auto",
           height: "100%",
