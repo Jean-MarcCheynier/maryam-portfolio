@@ -1,8 +1,10 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from "react";
 
-const LazyLayerController = lazy(() => import('./LayerController'));
+const LazyLayerController = lazy(() => import("./LayerController"));
 
-const LayerController = (props: JSX.IntrinsicAttributes & { children?: React.ReactNode; }) => (
+const LayerController = (
+  props: JSX.IntrinsicAttributes & { children?: React.ReactNode }
+) => (
   <Suspense fallback={null}>
     <LazyLayerController {...props} />
   </Suspense>
