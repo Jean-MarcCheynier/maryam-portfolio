@@ -1,6 +1,15 @@
+@import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer utilities {
+  .mrym-text-shadow {
+    text-shadow: 0 0 40px theme('colors.green.300'), 0 0 12px theme('colors.green.100');
+    
+  }
+}
 
 :root {
   --background: #ffffff;

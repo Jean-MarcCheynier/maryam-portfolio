@@ -18,14 +18,14 @@ export const ActionButton: FC<PropsWithChildren<ActionButtonProps>> = ({
   };
 
   return (
-    <div>
+    <div className="group">
       <button
-        className="bg-transparent hover:bg-opacity-30 hover:bg-green-200 text-green-700 font-semibold hover:text-white py-2 px-4 border-green-100 hover:border-transparent"
+        className="bg-transparent  text-green-700 font-semibold hover:text-green-400 py-2 px-4 rounded"
         onMouseEnter={onMouseEnter}
         onMouseLeave={reset}
         onClick={onClick}
       >
-        {children}
+        <span className={`hover:mrym-text-shadow font-sans`}>{children}</span>
       </button>
     </div>
   );
