@@ -1,29 +1,42 @@
 "use client";
 
-import React, { FC, PropsWithChildren } from "react";
-import styles from "./LayerManager.module.scss";
+import React, { FC, PropsWithChildren, useContext } from "react";
+import styles from "./LayerManager.module.css";
 import {
   Layer,
   LayerProps,
   LayerWithContext,
 } from "@/src/components/Layer/Layer";
-import { LayerContextProvider } from "../LayerContextProvider";
+import {
+  LayerActionContext,
+  LayerContextProvider,
+  useLayerActions,
+} from "../LayerContextProvider";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface LayerManagerProps {}
 
-const LayerManager: FC<PropsWithChildren<LayerManagerProps>> = ({
-  children,
-}) => {
+export type LayerManagerComposition = {
+  Item: typeof LayerWithContext;
+};
+
+const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
+  LayerManagerComposition = ({ children }) => {
+  const { highlightBio } = useLayerActions();
+
   return (
     <LayerContextProvider>
-      <div className={styles.LayerManager} data-testid="LayerManager">
+      <div
+        className={styles.LayerManager}
+        data-testid="LayerManager"
+        onMouseEnter={highlightBio}
+      >
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
             if (child.type !== Layer) {
               const props = child.props as LayerProps;
-              console.log(props);
-              return <Layer {...props} key={props.id} />;
+
+              return <LayerWithContext {...props} key={props.id} />;
             }
           }
         })}
@@ -32,6 +45,6 @@ const LayerManager: FC<PropsWithChildren<LayerManagerProps>> = ({
   );
 };
 
-export default LayerManager;
+LayerManager.Item = LayerWithContext;
 
-LayerManager.Layer = LayerWithContext;
+export default LayerManager;

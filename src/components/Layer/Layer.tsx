@@ -1,42 +1,52 @@
 "use client";
 
-import React, { FC } from "react";
-import styles from "./Layer.module.scss";
+import React, { FC, useContext } from "react";
+import styles from "./Layer.module.css";
 import Image from "next/image";
-import { useLayerContext } from "../LayerContextProvider";
+import {
+  LayerActionContext,
+  LayerContextProps,
+  useLayerActions,
+  useLayerContext,
+} from "../LayerContextProvider";
 
-export interface LayerProps {
+export type LayerProps = {
   id: string;
   src: string;
   alt: string;
-  visible?: boolean;
-}
+  priority?: boolean;
+};
 
-export const Layer: FC<LayerProps> = ({ src, alt, visible, id }) => (
-  <div id={id} className={styles.Layer} data-testid="Layer">
-    <Image
-      src={src}
-      alt={alt}
-      className={visible ? "visible" : "invisible"}
-      style={{
-        width: "auto",
-        height: "100%",
-      }}
-      sizes="100vh"
-      width={900}
-      height={900}
-    />
-  </div>
-);
+export const Layer: FC<LayerProps & LayerContextProps> = ({
+  src,
+  alt,
+  visible,
+  id,
+  priority = false,
+}) => {
+  return (
+    <div id={id} className={`${styles.Layer} `} data-testid="Layer">
+      <Image
+        src={src}
+        alt={alt}
+        priority={priority}
+        className={visible ? "visible" : "invisible"}
+        style={{
+          width: "auto",
+          height: "100%",
+        }}
+        sizes="100vh"
+        width={900}
+        height={900}
+      />
+    </div>
+  );
+};
 
 export default Layer;
 
-type LayerWithContextProps = Omit<LayerProps, "visible">;
-
-export const LayerWithContext: FC<LayerWithContextProps> = ({
-  id,
-  ...rest
-}) => {
+export const LayerWithContext: FC<LayerProps> = ({ id, ...rest }) => {
   const { visible } = useLayerContext(id);
-  return <Layer id={id} visible={visible} {...rest} />;
+
+  return <Layer id={id} visible={visible ?? true} {...rest} />;
 };

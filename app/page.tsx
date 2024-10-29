@@ -1,14 +1,15 @@
-import Layer from "@/src/components/Layer/Layer";
-import LayerManager from "@/src/components/LayerManager/LayerManager";
+"use client";
+
+import Layer from "@/src/components/LayerManager/LayerManager";
 
 export default function Home() {
   return (
-    <LayerManager>
-      <Layer id="0" src="/0.png" alt="Layer 0" />
-      <Layer id="1" src="/bio.png" alt="Layer 0" />
-      <Layer id="2" src="/contact.png" alt="Layer 0" />
-      <Layer id="3" src="/kids.png" alt="Layer 0" />
-      <Layer id="4" src="/projects.png" alt="Layer 0" />
-    </LayerManager>
+    <Layer>
+      <Layer.Item id="0" priority src="/0.png" alt="Layer 0" />
+      <Layer.Item id="1" src="/bio.png" alt="Layer 0" />
+      <Layer.Item id="2" src="/contact.png" alt="Layer 0" />
+      <Layer.Item id="3" src="/kids.png" alt="Layer 0" />
+      <Layer.Item id="4" src="/projects.png" alt="Layer 0" />
+    </Layer>
   );
 }

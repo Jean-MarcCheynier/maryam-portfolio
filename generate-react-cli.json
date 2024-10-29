@@ -2,7 +2,7 @@
   "usesTypeScript": true,
   "usesStyledComponents": false,
   "usesCssModule": true,
-  "cssPreprocessor": "scss",
+  "usesTailwindCss": true,
   "testLibrary": "Testing Library",
   "component": {
     "default": {

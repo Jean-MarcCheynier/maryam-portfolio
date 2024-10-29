@@ -6,8 +6,9 @@ import React, {
   useReducer,
 } from "react";
 
-export type LayerContextProps = Record<string, { visible: boolean }>;
-export const LayerContext = React.createContext<LayerContextProps>({});
+export type LayerContextProps = { visible: boolean };
+export type LayerContextMapProps = Record<string, LayerContextProps>;
+export const LayerContext = React.createContext<LayerContextMapProps>({});
 
 export type ActionContextProps = Dispatch<{ type: string; payload: object }>;
 export const LayerActionContext =
@@ -16,7 +17,14 @@ export const LayerActionContext =
 export const LayerContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const [layerContext, dispatch] = useReducer(reducer, {});
+  const [layerContext, dispatch] = useReducer(reducer, {
+    0: { visible: true },
+    1: { visible: false },
+    2: { visible: false },
+    3: { visible: false },
+    4: { visible: false },
+    5: { visible: true },
+  });
 
   return (
     <LayerContext.Provider value={layerContext}>
@@ -29,34 +37,60 @@ export const LayerContextProvider: React.FC<PropsWithChildren> = ({
 
 export function useLayerActions() {
   const dispatch = useContext(LayerActionContext);
-  if (!dispatch) return;
+  console.log("dispatch ", dispatch);
+  if (!dispatch) {
+    console.log("pas de dispatch");
+    return {
+      init: () => {},
+      highlightBio: () => {},
+    };
+  }
   //ACTIONS
   const highlightBio = () => {
+    console.log("coucou");
     dispatch({ type: "bio", payload: { visible: true } });
   };
+  const init = (initialLayerContext: LayerContextMapProps) => {
+    console.log("init", initialLayerContext);
+    dispatch({ type: "init", payload: initialLayerContext });
+  };
 
-  return { highlightBio };
+  return { highlightBio, init };
 }
 export function useLayerContext(layerId: string): { visible: boolean };
-export function useLayerContext(): LayerContextProps;
+export function useLayerContext(): LayerContextMapProps;
 export function useLayerContext(layerId?: unknown) {
   const layerContext = useContext(LayerContext);
-  if (!layerContext) return;
+
+  console.log("fullLayerContext", layerContext);
 
   if (typeof layerId === "string") {
-    return layerContext[layerId];
+    console.log("plop", layerContext);
+    if (!layerContext) return { visible: false };
+    return layerContext[layerId] ?? { visible: false };
   }
   return layerContext;
 }
 
-const reducer: Reducer<LayerContextProps, { type: string; payload: object }> = (
-  state,
-  action
-) => {
+const reducer: Reducer<
+  LayerContextMapProps,
+  { type: string; payload: object }
+> = (state, action) => {
+  console.log("reducer", action);
   switch (action.type) {
+    case "init":
+      return { ...action.payload };
     case "bio":
       state["bio"] = { ...state["bio"], ...action.payload };
-      return state;
+      console.log("passed");
+      return {
+        0: { visible: false },
+        1: { visible: false },
+        2: { visible: false },
+        3: { visible: false },
+        4: { visible: false },
+        5: { visible: false },
+      };
 
     default:
       return state;
