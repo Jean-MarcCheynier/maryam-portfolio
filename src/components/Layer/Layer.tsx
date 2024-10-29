@@ -20,9 +20,11 @@ export const Layer: FC<LayerProps & LayerContextProps> = ({
   src,
   alt,
   visible,
+  active,
   id,
   priority = false,
 }) => {
+  console.log("Layer", id, visible, active);
   return (
     <div id={id} className={`${styles.Layer} `} data-testid="Layer">
       <Image
@@ -47,7 +49,7 @@ export const Layer: FC<LayerProps & LayerContextProps> = ({
 export default Layer;
 
 export const LayerWithContext: FC<LayerProps> = ({ id, ...rest }) => {
-  const { visible } = useLayerContext(id);
+  const { visible, active } = useLayerContext(id);
 
-  return <Layer id={id} visible={visible ?? true} {...rest} />;
+  return <Layer id={id} visible={visible} active={active} {...rest} />;
 };

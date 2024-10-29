@@ -21,7 +21,6 @@ export const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
       <div className={styles.LayerManager} data-testid="LayerManager">
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            console.log("Child type", child.type);
             if (child.type === LayerWithContext) {
               const props = child.props as LayerProps;
 

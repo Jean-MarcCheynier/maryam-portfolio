@@ -18,15 +18,15 @@ export enum LayerId {
 export type LayerContextMapProps = Record<LayerId, LayerContextProps>;
 
 const initialLayerContext: LayerContextMapProps = {
-  0: { visible: true },
-  1: { visible: false },
-  2: { visible: false },
-  3: { visible: false },
-  4: { visible: false },
-  5: { visible: false },
+  0: { visible: true, active: false },
+  1: { visible: false, active: false },
+  2: { visible: false, active: false },
+  3: { visible: false, active: false },
+  4: { visible: false, active: false },
+  5: { visible: false, active: false },
 };
 
-export type LayerContextProps = { visible: boolean };
+export type LayerContextProps = { visible: boolean; active: boolean };
 
 export const LayerContext =
   React.createContext<LayerContextMapProps>(initialLayerContext);
@@ -71,14 +71,19 @@ export function useLayerActions() {
       id,
     });
   };
+  const activate = (id: LayerId) => {
+    dispatch({
+      type: ActionTypes.activate,
+      id,
+    });
+  };
   const init = (initialLayerContext: LayerContextMapProps) => {
-    console.log("init", initialLayerContext);
     dispatch({ type: ActionTypes.init, payload: initialLayerContext });
   };
 
-  return { highlight, init, reset };
+  return { highlight, init, reset, activate };
 }
-export function useLayerContext(layerId: LayerId): { visible: boolean };
+export function useLayerContext(layerId: LayerId): LayerContextProps;
 export function useLayerContext(): LayerContextMapProps;
 export function useLayerContext(layerId?: unknown) {
   const layerContext = useContext(LayerContext);
@@ -94,22 +99,42 @@ enum ActionTypes {
   init = "init",
   reset = "reset",
   highlight = "highlight",
+  activate = "activate",
 }
 
 type Action =
   | { type: ActionTypes.init; payload: LayerContextMapProps }
   | { type: ActionTypes.highlight; id: LayerId }
+  | { type: ActionTypes.activate; id: LayerId }
   | { type: ActionTypes.reset };
 
 const reducer: Reducer<LayerContextMapProps, Action> = (state, action) => {
-  console.log("reducer", action);
   switch (action.type) {
     case ActionTypes.init:
       return { ...action.payload };
     case ActionTypes.reset:
-      return { ...initialLayerContext };
+      (Object.keys(state) as LayerId[]).forEach((key: LayerId) => {
+        state[key] = {
+          ...state[key],
+          visible: initialLayerContext[key].visible || state[key].active,
+        };
+      });
+      return { ...state };
     case ActionTypes.highlight:
-      state[action.id] = { visible: true };
+      (Object.keys(state) as LayerId[]).forEach((key: LayerId) => {
+        state[key] = {
+          ...state[key],
+          visible: initialLayerContext[key].visible,
+        };
+      });
+      state[action.id] = { ...state[action.id], visible: true };
+      return { ...state };
+    case ActionTypes.activate:
+      (Object.keys(state) as LayerId[]).forEach((key: LayerId) => {
+        state[key].active = false;
+      });
+      state[action.id] = { visible: true, active: true };
+      console.log("activate", state);
       return { ...state };
 
     default:
