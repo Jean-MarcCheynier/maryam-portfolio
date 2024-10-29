@@ -14,7 +14,7 @@ export type LayerManagerComposition = {
   Controller: typeof LayerController;
 };
 
-const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
+export const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
   LayerManagerComposition = ({ children }) => {
   return (
     <LayerContextProvider>
@@ -39,5 +39,3 @@ const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
 
 LayerManager.Item = LayerWithContext;
 LayerManager.Controller = LayerController;
-
-export default LayerManager;
