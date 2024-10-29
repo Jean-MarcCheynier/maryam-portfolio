@@ -1,9 +1,9 @@
 import { FC, PropsWithChildren } from "react";
-import { useLayerActions } from "../LayerContextProvider";
+import { LayerId, useLayerActions } from "../LayerContextProvider";
 
 type ActionButtonProps = {
   onClick: () => void;
-  layerId: string;
+  layerId: LayerId;
 };
 
 export const ActionButton: FC<PropsWithChildren<ActionButtonProps>> = ({

@@ -1,18 +1,39 @@
 "use client";
 
+import { LayerId } from "@/src/components/LayerContextProvider";
 import { LayerManager } from "@/src/components/LayerManager/LayerManager";
 
 export default function Home() {
   return (
-    <>
-      <LayerManager>
-        <LayerManager.Item id="0" priority src="/0.png" alt="Layer 0" />
-        <LayerManager.Item id="1" src="/bio.png" alt="Layer 0" />
-        <LayerManager.Item id="2" src="/contact.png" alt="Layer 0" />
-        <LayerManager.Item id="3" src="/kids.png" alt="Layer 0" />
-        <LayerManager.Item id="4" src="/projects.png" alt="Layer 0" />
-        <LayerManager.Controller />
-      </LayerManager>
-    </>
+    <LayerManager>
+      <LayerManager.Item
+        id={LayerId.Background}
+        priority
+        src="/0.png"
+        alt="Background layer"
+      />
+      <LayerManager.Item
+        id={LayerId.Biography}
+        src="/bio.png"
+        alt="biography layer"
+      />
+      <LayerManager.Item
+        id={LayerId.Contact}
+        src="/contact.png"
+        alt="contact layer"
+      />
+      <LayerManager.Item id={LayerId.Kids} src="/kids.png" alt="kids layer" />
+      <LayerManager.Item
+        id={LayerId.Projects}
+        src="/projects.png"
+        alt="projects layer"
+      />
+      <LayerManager.Item
+        id={LayerId.TextAndDrafts}
+        src="/textAndDrafts.png"
+        alt="text and draft layer"
+      />
+      <LayerManager.Controller />
+    </LayerManager>
   );
 }

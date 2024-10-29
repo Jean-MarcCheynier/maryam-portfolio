@@ -3,10 +3,14 @@
 import React, { FC } from "react";
 import styles from "./Layer.module.css";
 import Image from "next/image";
-import { LayerContextProps, useLayerContext } from "../LayerContextProvider";
+import {
+  LayerContextProps,
+  LayerId,
+  useLayerContext,
+} from "../LayerContextProvider";
 
 export type LayerProps = {
-  id: string;
+  id: LayerId;
   src: string;
   alt: string;
   priority?: boolean;

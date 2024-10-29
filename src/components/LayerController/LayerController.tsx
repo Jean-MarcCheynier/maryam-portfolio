@@ -1,23 +1,27 @@
 import React, { FC } from "react";
 import styles from "./LayerController.module.css";
 import { ActionButton } from "./ActionButton";
+import { LayerId } from "../LayerContextProvider";
 
 const LayerController: FC = () => (
   <div
     className={`${styles.LayerController} flex flex-row justify-content-center absolute top-3`}
     data-testid="LayerController"
   >
-    <ActionButton layerId="1" onClick={() => {}}>
-      Bio
+    <ActionButton layerId={LayerId.Biography} onClick={() => {}}>
+      Biography
     </ActionButton>
-    <ActionButton layerId="2" onClick={() => {}}>
-      Bio
+    <ActionButton layerId={LayerId.Contact} onClick={() => {}}>
+      Contact
     </ActionButton>
-    <ActionButton layerId="3" onClick={() => {}}>
-      Bio
+    <ActionButton layerId={LayerId.Kids} onClick={() => {}}>
+      Kids
     </ActionButton>
-    <ActionButton layerId="4" onClick={() => {}}>
-      Bio
+    <ActionButton layerId={LayerId.Projects} onClick={() => {}}>
+      Projects
+    </ActionButton>
+    <ActionButton layerId={LayerId.TextAndDrafts} onClick={() => {}}>
+      TextAndDrafts
     </ActionButton>
   </div>
 );

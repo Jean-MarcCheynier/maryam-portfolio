@@ -6,13 +6,16 @@ import React, {
   useReducer,
 } from "react";
 
-export type LayerContextProps = { visible: boolean };
-export type LayerContextMapProps = Record<string, LayerContextProps>;
-export const LayerContext = React.createContext<LayerContextMapProps>({});
+export enum LayerId {
+  Background = "0",
+  Biography = "1",
+  Contact = "2",
+  Kids = "3",
+  Projects = "4",
+  TextAndDrafts = "5",
+}
 
-export type ActionContextProps = Dispatch<Action>;
-export const LayerActionContext =
-  React.createContext<ActionContextProps | null>(null);
+export type LayerContextMapProps = Record<LayerId, LayerContextProps>;
 
 const initialLayerContext: LayerContextMapProps = {
   0: { visible: true },
@@ -20,8 +23,17 @@ const initialLayerContext: LayerContextMapProps = {
   2: { visible: false },
   3: { visible: false },
   4: { visible: false },
-  5: { visible: true },
+  5: { visible: false },
 };
+
+export type LayerContextProps = { visible: boolean };
+
+export const LayerContext =
+  React.createContext<LayerContextMapProps>(initialLayerContext);
+
+export type ActionContextProps = Dispatch<Action>;
+export const LayerActionContext =
+  React.createContext<ActionContextProps | null>(null);
 
 export const LayerContextProvider: React.FC<PropsWithChildren> = ({
   children,
@@ -53,7 +65,7 @@ export function useLayerActions() {
       type: ActionTypes.reset,
     });
   };
-  const highlight = (id: string) => {
+  const highlight = (id: LayerId) => {
     dispatch({
       type: ActionTypes.highlight,
       id,
@@ -66,17 +78,14 @@ export function useLayerActions() {
 
   return { highlight, init, reset };
 }
-export function useLayerContext(layerId: string): { visible: boolean };
+export function useLayerContext(layerId: LayerId): { visible: boolean };
 export function useLayerContext(): LayerContextMapProps;
 export function useLayerContext(layerId?: unknown) {
   const layerContext = useContext(LayerContext);
 
-  console.log("fullLayerContext", layerContext);
-
-  if (typeof layerId === "string") {
-    console.log("plop", layerContext);
+  if (layerId) {
     if (!layerContext) return { visible: false };
-    return layerContext[layerId] ?? { visible: false };
+    return layerContext[layerId as LayerId] ?? { visible: false };
   }
   return layerContext;
 }
@@ -89,7 +98,7 @@ enum ActionTypes {
 
 type Action =
   | { type: ActionTypes.init; payload: LayerContextMapProps }
-  | { type: ActionTypes.highlight; id: string }
+  | { type: ActionTypes.highlight; id: LayerId }
   | { type: ActionTypes.reset };
 
 const reducer: Reducer<LayerContextMapProps, Action> = (state, action) => {
