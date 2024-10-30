@@ -38,7 +38,9 @@ export const ActionButton: FC<PropsWithChildren<ActionButtonProps>> = ({
         onClick={handleOnClick}
       >
         <span
-          className={`hover:mrym-text-shadow font-sans active:mrym-text-shadow active:text-green-800 `}
+          className={`hover:mrym-text-shadow font-sans ${
+            layer.active && "text-green-500"
+          } `}
         >
           {children}
         </span>
