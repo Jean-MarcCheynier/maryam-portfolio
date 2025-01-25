@@ -1,12 +1,12 @@
 "use client";
 
-import React, { FC } from "react";
+import type { FC } from "react";
 import styles from "./Layer.module.css";
 import Image from "next/image";
 import {
-  LayerContextProps,
-  LayerId,
   useLayerContext,
+  type LayerContextProps,
+  type LayerId,
 } from "../LayerContextProvider";
 
 export type LayerProps = {

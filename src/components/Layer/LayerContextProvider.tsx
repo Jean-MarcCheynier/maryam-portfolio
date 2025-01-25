@@ -1,30 +1,32 @@
+"use client";
+
 import React, {
-  Dispatch,
-  PropsWithChildren,
-  Reducer,
+  type Dispatch,
+  type PropsWithChildren,
+  type Reducer,
   useContext,
   useReducer,
 } from "react";
 
 export enum LayerId {
-  Background = "0",
-  Biography = "1",
-  Contact = "2",
-  Kids = "3",
-  Projects = "4",
-  TextAndDrafts = "5",
+  Background = "background",
+  Biography = "bio",
+  Contact = "contact",
+  Kids = "kids",
+  Projects = "project",
+  TextAndDrafts = "textAndDraft",
 }
 
 export type LayerContextMapProps = Record<LayerId, LayerContextProps>;
 
 const initialLayerContext: LayerContextMapProps = {
-  0: { visible: true, active: false },
-  1: { visible: false, active: false },
-  2: { visible: false, active: false },
-  3: { visible: false, active: false },
-  4: { visible: false, active: false },
-  5: { visible: false, active: false },
-};
+  [LayerId.Background]: { visible: true, active: false },
+  [LayerId.Biography]: { visible: false, active: false },
+  [LayerId.Contact]: { visible: false, active: false },
+  [LayerId.Kids]: { visible: false, active: false },
+  [LayerId.Projects]: { visible: false, active: false },
+  [LayerId.TextAndDrafts]: { visible: false, active: false },
+} as const;
 
 export type LayerContextProps = { visible: boolean; active: boolean };
 
@@ -56,7 +58,7 @@ export function useLayerActions() {
 
   if (!dispatch) {
     throw new Error(
-      "useLayerActions must be used within a LayerContextProvider"
+      "useLayerActions must be used within a LayerContextProvider",
     );
   }
   //ACTIONS
@@ -85,12 +87,12 @@ export function useLayerActions() {
 }
 export function useLayerContext(layerId: LayerId): LayerContextProps;
 export function useLayerContext(): LayerContextMapProps;
-export function useLayerContext(layerId?: unknown) {
+export function useLayerContext(layerId?: LayerId) {
   const layerContext = useContext(LayerContext);
 
   if (layerId) {
     if (!layerContext) return { visible: false };
-    return layerContext[layerId as LayerId] ?? { visible: false };
+    return layerContext[layerId] ?? { visible: false };
   }
   return layerContext;
 }
@@ -113,28 +115,27 @@ const reducer: Reducer<LayerContextMapProps, Action> = (state, action) => {
     case ActionTypes.init:
       return { ...action.payload };
     case ActionTypes.reset:
-      (Object.keys(state) as LayerId[]).forEach((key: LayerId) => {
+      for (const key of Object.keys(state) as LayerId[]) {
         state[key] = {
           ...state[key],
           visible: initialLayerContext[key].visible || state[key].active,
         };
-      });
+      }
       return { ...state };
     case ActionTypes.highlight:
-      (Object.keys(state) as LayerId[]).forEach((key: LayerId) => {
+      for (const key of Object.keys(state) as LayerId[]) {
         state[key] = {
           ...state[key],
           visible: initialLayerContext[key].visible,
         };
-      });
+      }
       state[action.id] = { ...state[action.id], visible: true };
       return { ...state };
     case ActionTypes.activate:
-      (Object.keys(state) as LayerId[]).forEach((key: LayerId) => {
+      for (const key of Object.keys(state) as LayerId[]) {
         state[key].active = false;
-      });
+      }
       state[action.id] = { visible: true, active: true };
-      console.log("activate", state);
       return { ...state };
 
     default:

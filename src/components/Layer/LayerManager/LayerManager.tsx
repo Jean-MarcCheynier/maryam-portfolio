@@ -1,21 +1,17 @@
 "use client";
 
-import React, { FC, PropsWithChildren, ReactNode } from "react";
+import React from "react";
+import type { FC, PropsWithChildren, ReactNode } from "react";
 import styles from "./LayerManager.module.css";
-import { LayerProps, LayerWithContext } from "@/src/components/Layer/Layer";
-import {
-  LayerContextMapProps,
-  LayerId,
-  useLayerContext,
-} from "../LayerContextProvider";
-import LayerController from "../LayerController/LayerController";
-
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface LayerManagerProps {}
+import type { LayerProps } from "@/src/components/Layer/Layer/Layer";
+import { LayerWithContext } from "@/src/components/Layer/Layer/Layer";
+import { LayerId, useLayerContext } from "../LayerContextProvider";
+import type { LayerContextMapProps } from "../LayerContextProvider";
+import NavBar from "../../NavBar/NavBar";
 
 export type LayerManagerComposition = {
   Item: typeof LayerWithContext;
-  Controller: typeof LayerController;
+  Controller: typeof NavBar;
 };
 
 const getActiveLayer = (layerContext: LayerContextMapProps) => {
@@ -30,10 +26,14 @@ const classThirdLayer = `${baseAnimation} translate-y-0 translate-x-1`;
 const classFourthLayer = `${baseAnimation} translate-y-10 translate-x-14`;
 const classFifthLayer = `${baseAnimation} translate-y-20 translate-x-20`;
 
-export const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
-  LayerManagerComposition = ({ children }) => {
+export const LayerManager: FC<PropsWithChildren> & LayerManagerComposition = ({
+  children,
+}) => {
   const layerContext = useLayerContext();
   const activeLayer = getActiveLayer(layerContext);
+
+  console.log("layerContext", layerContext);
+  console.log("activeLayer", activeLayer);
 
   const layers: ReactNode[] = [];
   const layerControl: ReactNode[] = [];
@@ -45,7 +45,7 @@ export const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
 
         layers.push(<LayerWithContext {...props} key={props.id} />);
       }
-      if (child.type === LayerController) {
+      if (child.type === NavBar) {
         layerControl.push(child);
       }
     }
@@ -73,4 +73,4 @@ export const LayerManager: FC<PropsWithChildren<LayerManagerProps>> &
 };
 
 LayerManager.Item = LayerWithContext;
-LayerManager.Controller = LayerController;
+LayerManager.Controller = NavBar;
